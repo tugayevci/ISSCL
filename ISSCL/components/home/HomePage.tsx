@@ -12,21 +12,27 @@ export default function HomePage() {
   return (
     <View style={styles.container}>
       <Text>
-        ISS Latitude:{" "}
+        ISS Latitude:
         {data.issLocation ? data.issLocation.Latitude : <ActivityIndicator size="small" color="#00ff00" />}
       </Text>
       <Text>
-        ISS Longitude:{" "}
+        ISS Longitude:
         {data.issLocation ? data.issLocation.Longitude : <ActivityIndicator size="small" color="#00ff00" />}
       </Text>
-      {/* <Text>
-        Your Latitude:{" "}
-        {errorMsg || (userCoordinate ? userCoordinate.Latitude : <ActivityIndicator size="small" color="#00ff00" />)}
-      </Text>
-      <Text>
-        Your Longitude:{" "}
-        {errorMsg || (userCoordinate ? userCoordinate.Longitude : <ActivityIndicator size="small" color="#00ff00" />)}
-      </Text> */}
+      {data.isLocationPermissionError ? (
+        <Text>App needs location permission 😢</Text>
+      ) : (
+        <View>
+          <Text>
+            Your Latitude:
+            {data.userLocation ? data.userLocation.Latitude : <ActivityIndicator size="small" color="#00ff00" />}
+          </Text>
+          <Text>
+            Your Longitude:
+            {data.userLocation ? data.userLocation.Latitude : <ActivityIndicator size="small" color="#00ff00" />}
+          </Text>
+        </View>
+      )}
       <Text>
         Distance: {data.distanceMeter} m || {data.distanceKm} km
       </Text>
