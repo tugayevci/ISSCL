@@ -15,6 +15,7 @@ export default function HomePage() {
       <Text style={styles.text}>{`Distance: ${data.distanceKm} km`}</Text>
       <MapView style={styles.mapStyle}>
         <Marker
+          image={require("../../assets/issSmall.png")}
           coordinate={{ latitude: data.issLocation.Latitude, longitude: data.issLocation.Longitude }}
           title={"International Space Station Current Location"}
           description={`Latitude: ${data.issLocation.Latitude} Longitude: ${data.issLocation.Longitude}`}
