@@ -10,45 +10,54 @@ export default function useData(): Data {
   const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
   const [isApiError, setIsApiError] = useState(false);
 
-  useEffect(() => {
-    setInterval(async () => {
-      try {
-        let data = await fetch("http://api.open-notify.org/iss-now.json");
-        let json = await data.json();
-        if (json && json.message === "success") {
-          const coordinate = new Coordinate({
-            Latitude: parseFloat(json.iss_position.latitude),
-            Longitude: parseFloat(json.iss_position.longitude),
-          });
-          setIssLocation(coordinate);
-        } else {
-          setIsApiError(true);
-        }
-      } catch (error) {
+  const getIssLocation = async () => {
+    try {
+      let data = await fetch("http://api.open-notify.org/iss-now.json");
+      let json = await data.json();
+      if (json && json.message === "success") {
+        const coordinate = new Coordinate({
+          Latitude: parseFloat(json.iss_position.latitude),
+          Longitude: parseFloat(json.iss_position.longitude),
+        });
+        setIssLocation(coordinate);
+      } else {
         setIsApiError(true);
       }
-    }, 6000);
-  }, []);
+    } catch (error) {
+      setIsApiError(true);
+    }
+  };
 
-  useEffect(() => {
-    setInterval(async () => {
-      try {
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== "granted") {
-          setIsLocationPermissionError(true);
-        }
-        let location = await Location.getCurrentPositionAsync({});
-
-        const coordinate = new Coordinate({
-          Latitude: location.coords.latitude,
-          Longitude: location.coords.longitude,
-        });
-        setUserLocation(coordinate);
-      } catch (error) {
+  const getUserLocation = async () => {
+    try {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
         setIsLocationPermissionError(true);
       }
+      let location = await Location.getCurrentPositionAsync({});
+
+      const coordinate = new Coordinate({
+        Latitude: location.coords.latitude,
+        Longitude: location.coords.longitude,
+      });
+      setUserLocation(coordinate);
+    } catch (error) {
+      setIsLocationPermissionError(true);
+    }
+  };
+
+  useEffect(() => {
+    getIssLocation();
+    getUserLocation();
+
+    setInterval(async () => {
+      getIssLocation();
+    }, 6000);
+
+    setInterval(async () => {
+      getUserLocation();
     }, 5000);
-  });
+  }, []);
 
   useEffect(() => {
     if (!userLocation || !issLocation) return;
