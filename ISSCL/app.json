@@ -9,11 +9,11 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/iss.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/iss.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#121212"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,15 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.tugayevci.isscl",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
-    }
+    },
+    "android": {
+      "package": "com.tugayevci.isscl",
+      "versionCode": 1
+    },
+    "description": "",
+    "githubUrl": "https://github.com/tugayevci/ISSCL"
   }
 }

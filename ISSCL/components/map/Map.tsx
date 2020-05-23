@@ -7,7 +7,7 @@ import Coordinate from "../../models/Coordinate";
 import { DataContext } from "../../context/DataContext";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
-export default function HomePage() {
+export default function Map() {
   const data = useContext(DataContext);
 
   return (

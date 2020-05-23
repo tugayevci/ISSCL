@@ -32,11 +32,19 @@ export default function HomePage() {
         <View style={styles.box}>
           <Text style={styles.textUser}>
             Your Latitude:{" "}
-            {data.userLocation ? data.userLocation.Latitude : <ActivityIndicator size="small" color="#00ff00" />}
+            {data.userLocation ? (
+              data.userLocation.Latitude.toFixed(4)
+            ) : (
+              <ActivityIndicator size="small" color="#00ff00" />
+            )}
           </Text>
           <Text style={styles.textUser}>
             Your Longitude:{" "}
-            {data.userLocation ? data.userLocation.Latitude : <ActivityIndicator size="small" color="#00ff00" />}
+            {data.userLocation ? (
+              data.userLocation.Longitude.toFixed(4)
+            ) : (
+              <ActivityIndicator size="small" color="#00ff00" />
+            )}
           </Text>
         </View>
       )}
