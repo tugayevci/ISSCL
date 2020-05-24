@@ -7,6 +7,8 @@ export default function useData(): Data {
   const [userLocation, setUserLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
   const [issLocation, setIssLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
   const [distanceMeter, setDistanceMeter] = useState<number>(0);
+  const [peopleOnIss, setPeopleOnIss] = useState<string[]>([]);
+  const [nextOverhead, setNextOverhead] = useState();
   const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
   const [isApiError, setIsApiError] = useState(false);
 
@@ -47,10 +49,27 @@ export default function useData(): Data {
     }
   };
 
+  const getPeopleOnIss = async () => {
+    try {
+      let data = await fetch("http://api.open-notify.org/astros.json");
+      let json = await data.json();
+
+      if (json && json.message === "success") {
+        const peoples = json.people.map((x: any) => x.craft === "ISS" && x.name);
+        setPeopleOnIss(peoples);
+        console.log("data", json);
+      } else {
+        setIsApiError(true);
+      }
+    } catch (error) {
+      setIsApiError(true);
+    }
+  };
+
   useEffect(() => {
     getIssLocation();
     getUserLocation();
-
+    getPeopleOnIss();
     setInterval(async () => {
       getIssLocation();
     }, 6000);
@@ -87,5 +106,6 @@ export default function useData(): Data {
     distanceMeter,
     isLocationPermissionError,
     isApiError,
+    peopleOnIss,
   });
 }

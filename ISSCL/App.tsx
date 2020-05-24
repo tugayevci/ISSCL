@@ -43,7 +43,7 @@ export default function App() {
             },
           }}>
           <Tab.Screen name="Home" component={HomePage} />
-          <Tab.Screen name="Map" component={Map} />
+          <Tab.Screen name="Map" component={HomePage} />
         </Tab.Navigator>
       </NavigationContainer>
     </DataContext.Provider>

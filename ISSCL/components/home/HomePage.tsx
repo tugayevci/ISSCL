@@ -2,14 +2,17 @@ import React, { useState, useEffect, useContext } from "react";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Location from "expo-location";
-import { StyleSheet, Text, View, ActivityIndicator, Image } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Image, FlatList } from "react-native";
 import Coordinate from "../../models/Coordinate";
 import { DataContext } from "../../context/DataContext";
 import colors from "../../constants/colors";
 
 export default function HomePage() {
   const [showIssDetails, setShowIssDetails] = useState(false);
+  const [showPeoples, setShowPeoples] = useState(false);
+
   const data = useContext(DataContext);
+  console.log("gelen data", data);
 
   return (
     <View style={styles.container}>
@@ -30,7 +33,7 @@ export default function HomePage() {
             ISS Longitude:{" "}
             {data.issLocation ? data.issLocation.Longitude : <ActivityIndicator size="small" color="#00ff00" />}
           </Text>
-          {showIssDetails && <Text style={styles.textTitleH4}>Details</Text>}
+          {showIssDetails && <View></View>}
         </View>
 
         {data.isLocationPermissionError ? (
@@ -61,6 +64,15 @@ export default function HomePage() {
           <Text style={styles.textDistance}>
             Distance: {data.distanceMeter} m || {data.distanceKm} km
           </Text>
+        </View>
+        <View style={styles.box} onTouchEnd={() => setShowPeoples(!showPeoples)}>
+          <Text style={styles.textPeopleIss}>There are currently {data.peopleOnIss?.length} humans in Iss</Text>
+          {showPeoples && (
+            <FlatList
+              data={data.peopleOnIss ? [...data.peopleOnIss] : []}
+              renderItem={({ item }: any) => <Text style={styles.listItem}>{`👨‍🚀 ${item}`}</Text>}
+            />
+          )}
         </View>
       </View>
     </View>
@@ -106,6 +118,10 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontSize: 20,
   },
+  textPeopleIss: {
+    color: "#fff",
+    fontSize: 20,
+  },
   textTitleH1: {
     color: "#fff",
     fontSize: 40,
@@ -113,5 +129,11 @@ const styles = StyleSheet.create({
   textTitleH4: {
     color: "#fff",
     fontSize: 15,
+  },
+  listItem: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+    color: "#fff",
   },
 });
