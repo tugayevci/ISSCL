@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "612625161627",
+    "firebase_url": "https://isscl-be15f.firebaseio.com",
+    "project_id": "isscl-be15f",
+    "storage_bucket": "isscl-be15f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612625161627:android:cce08c0f10551ebae4953e",
+        "android_client_info": {
+          "package_name": "com.tugayevci.isscl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612625161627-i73vq0hah42djd8pb0jd0dgsmarv26ms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3FaEY_w7HVE6m6vgzQs-3dZGgSPj863A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612625161627-i73vq0hah42djd8pb0jd0dgsmarv26ms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

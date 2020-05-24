@@ -9,26 +9,31 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "react-native";
 import colors from "./constants/colors";
+import * as Analytics from "expo-firebase-analytics";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
   const data = useData();
+
+  // useEffect(() => {
+  //   const logUsageData = async () => {
+  //     await Analytics.logEvent("first_open");
+  //   };
+
+  //   logUsageData();
+  // }, []);
+
   return (
     <DataContext.Provider value={data}>
       <NavigationContainer>
         <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-
-              if (route.name === "Home") {
-                iconName = focused ? "ios-home" : "ios-home";
-              } else if (route.name === "Map") {
-                iconName = focused ? "ios-map" : "ios-map";
-              }
-              return <Ionicons name={iconName || ""} size={size} color={color} />;
-            },
+          swipeEnabled
+          screenOptions={({ route }: any) => ({
+            tabBarIcon: ({ focused, color, size }: any) => (
+              <Ionicons name={route.name === "Home" ? "ios-home" : "ios-map"} size={size} color={color} />
+            ),
           })}
           tabBarOptions={{
             activeTintColor: colors.secondary,

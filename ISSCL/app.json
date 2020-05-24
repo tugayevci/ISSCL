@@ -2,11 +2,7 @@
   "expo": {
     "name": "ISSCL",
     "slug": "ISSCL",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/iss.png",
@@ -18,17 +14,31 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.tugayevci.isscl",
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "package": "com.tugayevci.isscl",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1
+    },
+    "web": {
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyAZfPkcAaqwvOZicDp_JLhmt9AX17-KE2M",
+          "authDomain": "isscl-be15f.firebaseapp.com",
+          "databaseURL": "https://isscl-be15f.firebaseio.com",
+          "projectId": "isscl-be15f",
+          "storageBucket": "isscl-be15f.appspot.com",
+          "messagingSenderId": "612625161627",
+          "appId": "1:612625161627:web:9ed50e5998f55191e4953e",
+          "measurementId": "G-NY0ELXX4MD"
+        }
+      }
     },
     "description": "",
     "githubUrl": "https://github.com/tugayevci/ISSCL"

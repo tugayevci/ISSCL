@@ -9,10 +9,14 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.6",
+    "@react-native-firebase/app": "^7.1.0",
+    "@react-native-firebase/auth": "^7.1.0",
     "@react-navigation/bottom-tabs": "^5.4.5",
+    "@react-navigation/material-top-tabs": "^5.2.8",
     "@react-navigation/native": "^5.4.0",
     "@react-navigation/stack": "^5.3.7",
     "expo": "~37.0.3",
+    "expo-firebase-analytics": "~2.1.1",
     "expo-location": "~8.1.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
@@ -23,6 +27,7 @@
     "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "~2.2.0",
     "react-native-swipe-gestures": "^1.0.5",
+    "react-native-tab-view": "^2.14.2",
     "react-native-web": "~0.11.7"
   },
   "devDependencies": {

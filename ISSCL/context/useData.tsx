@@ -14,6 +14,7 @@ export default function useData(): Data {
     try {
       let data = await fetch("http://api.open-notify.org/iss-now.json");
       let json = await data.json();
+
       if (json && json.message === "success") {
         const coordinate = new Coordinate({
           Latitude: parseFloat(json.iss_position.latitude),
