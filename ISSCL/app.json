@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/iss.png",
       "resizeMode": "contain",
-      "backgroundColor": "#121212"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

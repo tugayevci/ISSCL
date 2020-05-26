@@ -6,13 +6,14 @@ import { StyleSheet, Text, View, ActivityIndicator, Image, FlatList } from "reac
 import Coordinate from "../../models/Coordinate";
 import { DataContext } from "../../context/DataContext";
 import colors from "../../constants/colors";
+const moment = require("moment");
 
 export default function HomePage() {
   const [showIssDetails, setShowIssDetails] = useState(false);
   const [showPeoples, setShowPeoples] = useState(false);
 
   const data = useContext(DataContext);
-  console.log("gelen data", data);
+  console.log("data", data);
 
   return (
     <View style={styles.container}>
@@ -74,6 +75,15 @@ export default function HomePage() {
             />
           )}
         </View>
+        <View style={styles.box}>
+          {data.isLocationPermissionError ? (
+            <Text style={styles.textUser}>App needs location permission to get next overhead 😢</Text>
+          ) : (
+            <Text style={styles.textDistance}>
+              Next Overhead: {moment(data.nextOverhead).format("DD/MM/YYYY HH:MM")}
+            </Text>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -90,8 +100,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
   containerHeader: {
     flex: 1,
@@ -111,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   textUser: {
-    color: colors.primaryVariant,
+    color: colors.primary,
     fontSize: 30,
   },
   textDistance: {

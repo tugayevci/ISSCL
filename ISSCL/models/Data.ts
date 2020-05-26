@@ -8,6 +8,7 @@ export default class Data {
   isLocationPermissionError?: boolean;
   isApiError?: boolean;
   peopleOnIss?: string[];
+  nextOverhead?: number;
   constructor(x: Data) {
     this.userLocation = x.userLocation;
     this.issLocation = x.issLocation;
@@ -16,5 +17,6 @@ export default class Data {
     this.distanceMeter = x.distanceMeter;
     this.distanceKm = x.distanceMeter / 1000;
     this.peopleOnIss = x.peopleOnIss;
+    this.nextOverhead = x.nextOverhead;
   }
 }

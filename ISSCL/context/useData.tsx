@@ -8,7 +8,7 @@ export default function useData(): Data {
   const [issLocation, setIssLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
   const [distanceMeter, setDistanceMeter] = useState<number>(0);
   const [peopleOnIss, setPeopleOnIss] = useState<string[]>([]);
-  const [nextOverhead, setNextOverhead] = useState();
+  const [nextOverhead, setNextOverhead] = useState(1590338576 * 1000);
   const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
   const [isApiError, setIsApiError] = useState(false);
 
@@ -66,10 +66,30 @@ export default function useData(): Data {
     }
   };
 
+  const getNextOverhead = async () => {
+    try {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setIsLocationPermissionError(true);
+      }
+      let location = await Location.getCurrentPositionAsync({});
+
+      let data = await fetch(
+        `http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=1`
+      );
+      let json = await data.json();
+
+      if (json && json.message === "success") {
+        setNextOverhead(json.response[0].risetime * 1000);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
     getIssLocation();
     getUserLocation();
     getPeopleOnIss();
+    getNextOverhead();
     setInterval(async () => {
       getIssLocation();
     }, 6000);
@@ -107,5 +127,6 @@ export default function useData(): Data {
     isLocationPermissionError,
     isApiError,
     peopleOnIss,
+    nextOverhead,
   });
 }

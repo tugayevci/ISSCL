@@ -1,17 +1,14 @@
-import React, { useState, useEffect, createContext } from "react";
 import "react-native-gesture-handler";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { DataContext } from "./context/DataContext";
 import HomePage from "./components/home/HomePage";
 import Map from "./components/map/Map";
 import useData from "./context/useData";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import { Button } from "react-native";
 import colors from "./constants/colors";
-import * as Analytics from "expo-firebase-analytics";
+//import * as Analytics from "expo-firebase-analytics";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
+import { View, StatusBar } from "react-native";
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
@@ -26,26 +23,19 @@ export default function App() {
   // }, []);
 
   return (
-    <DataContext.Provider value={data}>
-      <NavigationContainer>
-        <Tab.Navigator
-          swipeEnabled
-          screenOptions={({ route }: any) => ({
-            tabBarIcon: ({ focused, color, size }: any) => (
-              <Ionicons name={route.name === "Home" ? "ios-home" : "ios-map"} size={size} color={color} />
-            ),
-          })}
-          tabBarOptions={{
-            activeTintColor: colors.secondary,
-            inactiveTintColor: "gray",
-            tabStyle: {
-              backgroundColor: colors.box,
-            },
-          }}>
-          <Tab.Screen name="Home" component={HomePage} />
-          <Tab.Screen name="Map" component={HomePage} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </DataContext.Provider>
+    <View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+      <DataContext.Provider value={data}>
+        <NavigationContainer>
+          <Tab.Navigator
+            tabBarOptions={{
+              activeTintColor: "white",
+              style: { backgroundColor: "dimgrey" },
+            }}>
+            <Tab.Screen name="Home" component={HomePage} />
+            <Tab.Screen name="Map" component={HomePage} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </DataContext.Provider>
+    </View>
   );
 }
