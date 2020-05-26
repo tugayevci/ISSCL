@@ -71,7 +71,7 @@ export default function HomePage() {
           {showPeoples && (
             <FlatList
               data={data.peopleOnIss ? [...data.peopleOnIss] : []}
-              renderItem={({ item }: any) => <Text style={styles.listItem}>{`👨‍🚀 ${item}`}</Text>}
+              renderItem={({ item, index }: any) => <Text key={index} style={styles.listItem}>{`👨‍🚀 ${item}`}</Text>}
             />
           )}
         </View>

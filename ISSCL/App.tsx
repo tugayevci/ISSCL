@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { DataContext } from "./context/DataContext";
 import HomePage from "./components/home/HomePage";
 import Map from "./components/map/Map";
+import Information from "./components/information/Information";
 import useData from "./context/useData";
 import colors from "./constants/colors";
 //import * as Analytics from "expo-firebase-analytics";
@@ -30,9 +31,11 @@ export default function App() {
             tabBarOptions={{
               activeTintColor: "white",
               style: { backgroundColor: "dimgrey" },
-            }}>
+            }}
+            initialRouteName="Home">
+            <Tab.Screen name="Information" component={Information} />
             <Tab.Screen name="Home" component={HomePage} />
-            <Tab.Screen name="Map" component={HomePage} />
+            <Tab.Screen name="Map" component={Map} />
           </Tab.Navigator>
         </NavigationContainer>
       </DataContext.Provider>
