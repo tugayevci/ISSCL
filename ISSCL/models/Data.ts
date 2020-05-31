@@ -1,14 +1,14 @@
 import Coordinate from "./Coordinate";
 
 export default class Data {
-  userLocation: Coordinate;
-  issLocation: Coordinate;
+  userLocation: Coordinate | undefined;
+  issLocation: Coordinate | undefined;
   distanceMeter: number;
   distanceKm?: number;
   isLocationPermissionError?: boolean;
   isApiError?: boolean;
-  peopleOnIss?: string[];
-  nextOverhead?: number;
+  peopleOnIss?: any[];
+  nextOverhead?: number[];
   constructor(x: Data) {
     this.userLocation = x.userLocation;
     this.issLocation = x.issLocation;

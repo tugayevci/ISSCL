@@ -4,13 +4,14 @@ import Coordinate from "../models/Coordinate";
 import Data from "../models/Data";
 
 export default function useData(): Data {
-  const [userLocation, setUserLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
-  const [issLocation, setIssLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
+  const [userLocation, setUserLocation] = useState<Coordinate | undefined>(undefined);
+  const [issLocation, setIssLocation] = useState<Coordinate | undefined>(undefined);
   const [distanceMeter, setDistanceMeter] = useState<number>(0);
-  const [peopleOnIss, setPeopleOnIss] = useState<string[]>([]);
-  const [nextOverhead, setNextOverhead] = useState(1590338576 * 1000);
+  const [peopleOnIss, setPeopleOnIss] = useState<any[]>([]);
+  const [nextOverhead, setNextOverhead] = useState([1590338576 * 1000]);
   const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
   const [isApiError, setIsApiError] = useState(false);
+  const [isLocationPermissionGranted, setIsLocationPermissionGranted] = useState(false);
 
   const getIssLocation = async () => {
     try {
@@ -33,10 +34,10 @@ export default function useData(): Data {
 
   const getUserLocation = async () => {
     try {
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== "granted") {
-        setIsLocationPermissionError(true);
-      }
+      // let { status } = await Location.requestPermissionsAsync();
+      // if (status !== "granted") {
+      //   setIsLocationPermissionError(true);
+      // }
       let location = await Location.getCurrentPositionAsync({});
 
       const coordinate = new Coordinate({
@@ -53,9 +54,9 @@ export default function useData(): Data {
     try {
       let data = await fetch("http://api.open-notify.org/astros.json");
       let json = await data.json();
-
       if (json && json.message === "success") {
-        const peoples = json.people.map((x: any) => x.craft === "ISS" && x.name);
+        //const peoples = json.people.map((x: any) => x.craft === "ISS" && x.name);
+        const peoples = json.people.map((x: any) => ({ craft: x.craft, name: x.name }));
         setPeopleOnIss(peoples);
         console.log("data", json);
       } else {
@@ -68,36 +69,43 @@ export default function useData(): Data {
 
   const getNextOverhead = async () => {
     try {
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== "granted") {
-        setIsLocationPermissionError(true);
-      }
+      console.log("here");
       let location = await Location.getCurrentPositionAsync({});
-
-      let data = await fetch(
-        `http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=1`
-      );
+      let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=5`);
       let json = await data.json();
+      console.log("json", json);
+      console.log("dataaaa", data);
 
       if (json && json.message === "success") {
-        setNextOverhead(json.response[0].risetime * 1000);
+        const overheads = json.response.map((x: any) => x.risetime * 1000);
+        setNextOverhead(overheads);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("catch", error);
+    }
   };
 
   useEffect(() => {
-    getIssLocation();
-    getUserLocation();
-    getPeopleOnIss();
-    getNextOverhead();
-    setInterval(async () => {
+    const getData = async () => {
+      await getPermissionForLocation();
       getIssLocation();
-    }, 6000);
+      getPeopleOnIss();
 
+      setInterval(async () => {
+        getIssLocation();
+      }, 6000);
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    getUserLocation();
+    getNextOverhead();
     setInterval(async () => {
       getUserLocation();
     }, 5000);
-  }, []);
+  }, [isLocationPermissionGranted]);
 
   useEffect(() => {
     if (!userLocation || !issLocation) return;
@@ -118,13 +126,24 @@ export default function useData(): Data {
     const dFixed = parseInt(d.toFixed(0));
 
     setDistanceMeter(dFixed);
-  });
+  }, [userLocation, issLocation]);
+
+  const getPermissionForLocation = async () => {
+    try {
+      let status = await Location.requestPermissionsAsync();
+      if (status.granted) {
+        setIsLocationPermissionGranted(true);
+      } else {
+        setIsLocationPermissionGranted(false);
+      }
+    } catch (error) {}
+  };
 
   return new Data({
     userLocation,
     issLocation,
     distanceMeter,
-    isLocationPermissionError,
+    isLocationPermissionError: !isLocationPermissionGranted,
     isApiError,
     peopleOnIss,
     nextOverhead,

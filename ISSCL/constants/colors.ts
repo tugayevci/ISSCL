@@ -1,15 +1,19 @@
-const background = "#121212";
-const box = "#2c2c2c";
-const primary = "#BB86FC";
-const primaryVariant = "#3700B3";
-const secondary = "#03DAC6";
-
-const colors = {
-  background,
-  box,
-  primary,
-  primaryVariant,
-  secondary,
+const tintColor = "#2f95dc";
+const Colors = {
+  tintColor,
+  tabIconDefault: "#ccc",
+  tabIconSelected: tintColor,
+  tabBar: "#fefefe",
+  errorBackground: "red",
+  errorText: "#fff",
+  warningBackground: "#EAEB5E",
+  warningText: "#666804",
+  noticeBackground: tintColor,
+  noticeText: "#fff",
+  background: "#121212",
+  box: "#2c2c2c",
+  primary: "#BB86FC",
+  primaryVariant: "#3700B3",
+  secondary: "#03DAC6",
 };
-
-export default colors;
+export default Colors;

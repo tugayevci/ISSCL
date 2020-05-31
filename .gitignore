@@ -108,3 +108,19 @@ dist
 .expo
 __generated__
 web-build
+
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+app.json
