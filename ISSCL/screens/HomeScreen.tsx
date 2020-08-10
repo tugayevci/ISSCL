@@ -1,18 +1,48 @@
-import * as WebBrowser from "expo-web-browser";
-import * as React from "react";
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { Image, Platform, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { DataContext } from "../context/DataContext";
 import Colors from "../constants/Colors";
+import BlinkBox from "../components/BlinkBox";
+import { AntDesign } from "@expo/vector-icons";
+import * as Location from "expo-location";
+
 const moment = require("moment");
-import { MonoText } from "../components/StyledText";
 
 export default function HomeScreen() {
-  const [showIssDetails, setShowIssDetails] = React.useState(false);
-  const [showPeoples, setShowPeoples] = React.useState(false);
-  const [showOverheads, setShowOverheads] = React.useState(false);
+  const [showIssDetails, setShowIssDetails] = useState(false);
+  const [showPeoples, setShowPeoples] = useState(false);
+  const [showOverheads, setShowOverheads] = useState(false);
+  const [toggleIssBlink, setToggleIssBlink] = useState(false);
+  const [toggleUserLocationBlink, setToggleUserLocationBlink] = useState(false);
+  const [loadingDots, setLoadingDots] = useState<string[]>([]);
 
-  const data = React.useContext(DataContext);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setLoadingDots((dots) => [...dots, "."]);
+  //   }, 500);
+  //   return () => clearInterval(interval);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (loadingDots.length > 2) setLoadingDots([]);
+  // }, [loadingDots]);
+
+  const data = useContext(DataContext);
+
+  useEffect(() => {
+    setToggleIssBlink(!toggleIssBlink);
+  }, [data.issLocation]);
+
+  useEffect(() => {
+    setToggleUserLocationBlink(!toggleUserLocationBlink);
+  }, [data.userLocation]);
+
+  const allowLocationPermission = async () => {
+    await Location.requestPermissionsAsync();
+  };
+
+  console.log("load", loadingDots);
 
   return (
     <View style={styles.container}>
@@ -25,20 +55,26 @@ export default function HomeScreen() {
           <Text style={styles.textTitleH4}>International Space Station Current Location</Text>
         </View>
         <View style={{ flex: 5, marginTop: 15 }}>
-          <View style={styles.box} onTouchEnd={() => setShowIssDetails(!showIssDetails)}>
-            <Text style={styles.textIss}>ISS Latitude: {data.issLocation ? data.issLocation.Latitude : "..."}</Text>
-            <Text style={styles.textIss}>ISS Longitude: {data.issLocation ? data.issLocation.Longitude : "..."}</Text>
-            {showIssDetails && <View></View>}
+          <View style={styles.box}>
+            <BlinkBox toggleBlink={toggleIssBlink}>
+              <Text style={styles.textIss}>ISS Latitude: {data.issLocation ? data.issLocation.Latitude : loadingDots.join("")}</Text>
+              <Text style={styles.textIss}>ISS Longitude: {data.issLocation ? data.issLocation.Longitude : loadingDots.join("")}</Text>
+            </BlinkBox>
           </View>
 
           {data.isLocationPermissionError ? (
             <View style={styles.box}>
-              <Text style={styles.textUser}>App needs location permission 😢</Text>
+              <Text style={[styles.textUser, { marginBottom: 10 }]}>App needs location permission 😢</Text>
+              <Button onPress={() => allowLocationPermission()} title="Allow Location"></Button>
             </View>
           ) : (
             <View style={styles.box}>
-              <Text style={styles.textUser}>Your Latitude: {data.userLocation ? data.userLocation.Latitude.toFixed(4) : "..."}</Text>
-              <Text style={styles.textUser}>Your Longitude: {data.userLocation ? data.userLocation.Longitude.toFixed(4) : "..."}</Text>
+              <BlinkBox toggleBlink={toggleUserLocationBlink}>
+                <Text style={styles.textUser}>Your Latitude: {data.userLocation ? data.userLocation.Latitude.toFixed(4) : loadingDots.join("")}</Text>
+                <Text style={styles.textUser}>
+                  Your Longitude: {data.userLocation ? data.userLocation.Longitude.toFixed(4) : loadingDots.join("")}
+                </Text>
+              </BlinkBox>
             </View>
           )}
           <View style={styles.box}>
@@ -46,34 +82,55 @@ export default function HomeScreen() {
               Distance: {data.distanceMeter} m || {data.distanceKm} km
             </Text>
           </View>
-          <View style={styles.box} onTouchEnd={() => setShowPeoples(!showPeoples)}>
-            <Text style={styles.textPeopleIss}>There are currently {data.peopleOnIss?.length} humans in Space</Text>
-            {showPeoples && (
-              <FlatList
-                data={data.peopleOnIss ? [...data.peopleOnIss] : []}
-                renderItem={({ item }: any) => <Text key={item.name} style={styles.listItem}>{`👨‍🚀 ${item.name} - ${item.craft}`}</Text>}
-              />
-            )}
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              setShowPeoples(!showPeoples);
+            }}>
+            <View style={[styles.box, { flexDirection: "column" }]}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <Text style={styles.textPeopleIss}>There are currently {data.peopleOnIss?.length} humans in Space </Text>
+                <AntDesign name={showPeoples ? "caretup" : "caretdown"} size={20} color="white" />
+              </View>
+              <View style={{ flex: 1 }}>
+                {showPeoples && (
+                  <View style={{ flex: 1, flexDirection: "column" }}>
+                    {data.peopleOnIss?.map((item, index) => (
+                      <Text key={index} style={styles.listItem}>{`👨‍🚀 ${item.name} - ${item.craft}`}</Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
 
           {data.isLocationPermissionError && (
             <View style={styles.box}>
               <Text style={styles.textUser}>App needs location permission to get next overhead 😢</Text>
             </View>
           )}
-
           {!data.isLocationPermissionError && (
-            <View style={styles.box} onTouchEnd={() => setShowOverheads(!showOverheads)}>
-              <Text style={styles.textPeopleIss}>Next Overhead at {moment(data.nextOverhead ? data.nextOverhead[0] : null).format("HH:MM")}</Text>
-              {showOverheads && (
-                <FlatList
-                  data={data.nextOverhead ? [...data.nextOverhead] : []}
-                  renderItem={({ item, index }: any) => (
-                    <Text key={item} style={styles.listItem}>{`${index + 1}. Overhead ${moment(item).format("DD/MM/YYYY HH:MM")}`}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                setShowOverheads(!showOverheads);
+              }}>
+              <View style={[styles.box, { flexDirection: "column" }]}>
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                  <Text style={styles.textPeopleIss}>Next Overhead at {moment(data.nextOverhead ? data.nextOverhead[0] : null).format("HH:MM")}</Text>
+                  <AntDesign name={showOverheads ? "caretup" : "caretdown"} size={20} color="white" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  {showOverheads && (
+                    <View style={{ flex: 1, flexDirection: "column" }}>
+                      {data.nextOverhead?.map((item, index) => (
+                        <Text key={index} style={styles.listItem}>{`${index + 1}. Overhead ${moment(item).format("DD/MM/YYYY HH:MM")}`}</Text>
+                      ))}
+                    </View>
                   )}
-                />
-              )}
-            </View>
+                </View>
+              </View>
+            </TouchableOpacity>
           )}
         </View>
       </ScrollView>
@@ -209,6 +266,7 @@ const styles = StyleSheet.create({
   textPeopleIss: {
     color: "#fff",
     fontSize: 20,
+    flex: 1,
   },
   textTitleH1: {
     color: "#fff",

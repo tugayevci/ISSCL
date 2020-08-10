@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import "react-native-gesture-handler";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { DataContext } from "../context/DataContext";
 import MapView, { Marker, Polyline } from "react-native-maps";
+import route from "../constants/issRoute";
 
 export default function Map() {
   const data = useContext(DataContext);
+  const memoPoly = useMemo(() => <Polyline strokeWidth={1} strokeColor="blue" coordinates={route} />, []);
 
   return (
     <View style={styles.container}>
@@ -39,6 +41,8 @@ export default function Map() {
             ]}
           />
         )}
+
+        {memoPoly}
       </MapView>
     </View>
   );
