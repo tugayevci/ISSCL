@@ -1,34 +1,28 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Image, Platform, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation, Button } from "react-native";
+import { Image, Platform, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation, Button, ActivityIndicator, UIManager } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { DataContext } from "../context/DataContext";
 import Colors from "../constants/Colors";
 import BlinkBox from "../components/BlinkBox";
 import { AntDesign } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { LanguageContext } from "../context/LanguageContext";
 
 const moment = require("moment");
-
 export default function HomeScreen() {
   const [showIssDetails, setShowIssDetails] = useState(false);
   const [showPeoples, setShowPeoples] = useState(false);
   const [showOverheads, setShowOverheads] = useState(false);
   const [toggleIssBlink, setToggleIssBlink] = useState(false);
   const [toggleUserLocationBlink, setToggleUserLocationBlink] = useState(false);
-  const [loadingDots, setLoadingDots] = useState<string[]>([]);
+  const [showDetails, setDetails] = useState(false);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setLoadingDots((dots) => [...dots, "."]);
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, []);
+  const contextData = useContext(DataContext);
+  const data = contextData.data;
+  const grantPermission = contextData.grantPermission;
 
-  // useEffect(() => {
-  //   if (loadingDots.length > 2) setLoadingDots([]);
-  // }, [loadingDots]);
-
-  const data = useContext(DataContext);
+  const languageData = useContext(LanguageContext);
+  const l = languageData.language;
 
   useEffect(() => {
     setToggleIssBlink(!toggleIssBlink);
@@ -38,11 +32,17 @@ export default function HomeScreen() {
     setToggleUserLocationBlink(!toggleUserLocationBlink);
   }, [data.userLocation]);
 
-  const allowLocationPermission = async () => {
-    await Location.requestPermissionsAsync();
-  };
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }, []);
 
-  console.log("load", loadingDots);
+  const allowLocationPermission = async () => {
+    if (grantPermission != null) {
+      grantPermission();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -57,8 +57,12 @@ export default function HomeScreen() {
         <View style={{ flex: 5, marginTop: 15 }}>
           <View style={styles.box}>
             <BlinkBox toggleBlink={toggleIssBlink}>
-              <Text style={styles.textIss}>ISS Latitude: {data.issLocation ? data.issLocation.Latitude : loadingDots.join("")}</Text>
-              <Text style={styles.textIss}>ISS Longitude: {data.issLocation ? data.issLocation.Longitude : loadingDots.join("")}</Text>
+              <Text style={styles.textIss}>
+                ISS {l.latitude}: {data.issLocation ? data.issLocation.Latitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+              </Text>
+              <Text style={styles.textIss}>
+                ISS {l.longitude}: {data.issLocation ? data.issLocation.Longitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+              </Text>
             </BlinkBox>
           </View>
 
@@ -70,16 +74,20 @@ export default function HomeScreen() {
           ) : (
             <View style={styles.box}>
               <BlinkBox toggleBlink={toggleUserLocationBlink}>
-                <Text style={styles.textUser}>Your Latitude: {data.userLocation ? data.userLocation.Latitude.toFixed(4) : loadingDots.join("")}</Text>
                 <Text style={styles.textUser}>
-                  Your Longitude: {data.userLocation ? data.userLocation.Longitude.toFixed(4) : loadingDots.join("")}
+                  {l.your_latitude}:{" "}
+                  {data.userLocation ? data.userLocation.Latitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+                </Text>
+                <Text style={styles.textUser}>
+                  {l.your_longitude}:{" "}
+                  {data.userLocation ? data.userLocation.Longitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
                 </Text>
               </BlinkBox>
             </View>
           )}
           <View style={styles.box}>
             <Text style={styles.textDistance}>
-              Distance: {data.distanceMeter} m || {data.distanceKm} km
+              {l.distance}: {data.distanceMeter} m || {data.distanceKm} km
             </Text>
           </View>
           <TouchableOpacity
@@ -89,7 +97,10 @@ export default function HomeScreen() {
             }}>
             <View style={[styles.box, { flexDirection: "column" }]}>
               <View style={{ flex: 1, flexDirection: "row" }}>
-                <Text style={styles.textPeopleIss}>There are currently {data.peopleOnIss?.length} humans in Space </Text>
+                <Text style={styles.textPeopleIss}>
+                  {/* {l.there_are_currently.replace("{x}", data.peopleOnIss ? data.peopleOnIss.length.toString() : "0").toString()}{" "} */}
+                  {data.peopleOnIss ? l.there_are_currently.replace("{x}", data.peopleOnIss.length.toString()) : l.there_are_currently.replace("{x}", "0")}
+                </Text>
                 <AntDesign name={showPeoples ? "caretup" : "caretdown"} size={20} color="white" />
               </View>
               <View style={{ flex: 1 }}>
@@ -117,7 +128,9 @@ export default function HomeScreen() {
               }}>
               <View style={[styles.box, { flexDirection: "column" }]}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
-                  <Text style={styles.textPeopleIss}>Next Overhead at {moment(data.nextOverhead ? data.nextOverhead[0] : null).format("HH:MM")}</Text>
+                  <Text style={styles.textPeopleIss}>
+                    {l.next_overhead} {moment(data.nextOverhead ? data.nextOverhead[0] : null).format("HH:MM")}
+                  </Text>
                   <AntDesign name={showOverheads ? "caretup" : "caretdown"} size={20} color="white" />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -132,6 +145,29 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            onPress={() => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              setDetails(!showDetails);
+            }}>
+            <View style={[styles.box, { flexDirection: "column" }]}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <Text style={styles.textPeopleIss}>The International Space Station (ISS) is a modular space station in low Earth orbit{!showDetails && "..."}</Text>
+                <AntDesign name={showDetails ? "caretup" : "caretdown"} size={20} color="white" />
+              </View>
+              <View style={{ flex: 1, alignItems: "center" }}>
+                {showDetails && (
+                  <>
+                    <Text style={[styles.textPeopleIss, { marginTop: 10 }]}>
+                      It is a multinational collaborative project between five participating space agencies: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 and CSA 🇨🇦
+                    </Text>
+                    <Image resizeMode="contain" style={{ width: 250, height: 250, margin: 20 }} source={require("../assets/images/issBadge.png")} />
+                  </>
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

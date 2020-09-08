@@ -1,15 +1,19 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
 import InformationScreen from "../screens/InformationScreen";
 import MapScreen from "../screens/MapScreen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../constants/Colors";
+import { LanguageContext } from "../context/LanguageContext";
 
 const Tab = createMaterialTopTabNavigator();
 const INITIAL_ROUTE_NAME = "Home";
 
-export default function BottomTabNavigator({ navigation, route }) {
+export default function BottomTabNavigator() {
+  const languageData = useContext(LanguageContext);
+  const l = languageData.language;
+
   return (
     <Tab.Navigator
       initialRouteName={INITIAL_ROUTE_NAME}
@@ -21,24 +25,24 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Information"
         component={InformationScreen}
         options={{
-          title: "Information",
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          title: l.options,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="InformationScreen" />,
         }}
       />
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          title: "Home",
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          title: l.home,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="HomeScreen" />,
         }}
       />
       <Tab.Screen
         name="Map"
         component={MapScreen}
         options={{
-          title: "Map",
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          title: l.map,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="MapScreen" />,
         }}
       />
     </Tab.Navigator>

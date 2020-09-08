@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import "react-native-gesture-handler";
-import { StyleSheet, Text, View, Button, Image, Linking } from "react-native";
+import { StyleSheet, Text, View, Button, Image, Linking, Picker } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Colors from "../constants/Colors";
 import Links from "../constants/Links";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function Information() {
+  const languageData = useContext(LanguageContext);
+  const l = languageData.language;
+
   const handleGithubButton = () => {
     Linking.canOpenURL(Links.github).then((supported) => {
       if (supported) Linking.openURL(Links.github);
@@ -24,11 +28,18 @@ export default function Information() {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.miniContainer}>
         <Image style={styles.image} source={require("../assets/images/github.png")}></Image>
-        <Button color={Colors.box} onPress={() => handleGithubButton()} title="View Source Code On Github"></Button>
+        <Button color={Colors.box} onPress={() => handleGithubButton()} title={l.check_source_github}></Button>
       </View>
       <View style={styles.miniContainer}>
         <Image style={styles.image} source={require("../assets/images/linkedin.png")}></Image>
-        <Button color={Colors.box} onPress={() => handleLinkedinButton()} title="Check My Profile On Linkedin"></Button>
+        <Button color={Colors.box} onPress={() => handleLinkedinButton()} title={l.check_linkedin_profile}></Button>
+      </View>
+      <View style={[styles.box]}>
+        <Text style={[{ color: Colors.primary, fontSize: 20, marginBottom: 5 }]}>{l.language} </Text>
+        <Picker selectedValue={l.lang_key} style={{ height: 40, width: 150, color: "white" }} onValueChange={(v) => languageData.setLanguage(v)}>
+          <Picker.Item label="🇺🇸 English" value="en" />
+          <Picker.Item label="🇹🇷 Türkçe" value="tr" />
+        </Picker>
       </View>
     </ScrollView>
   );
@@ -59,5 +70,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.box,
+  },
+  box: {
+    backgroundColor: Colors.box,
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
