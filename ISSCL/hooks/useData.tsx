@@ -3,7 +3,7 @@ import * as Location from "expo-location";
 import Coordinate from "../models/Coordinate";
 import Data from "../models/Data";
 
-export default function useData(): Data {
+export default function useData(): any {
   const [userLocation, setUserLocation] = useState<Coordinate | undefined>(undefined);
   const [issLocation, setIssLocation] = useState<Coordinate | undefined>(undefined);
   const [distanceMeter, setDistanceMeter] = useState<number>(0);
@@ -17,7 +17,6 @@ export default function useData(): Data {
     try {
       let data = await fetch("http://api.open-notify.org/iss-now.json");
       let json = await data.json();
-
       if (json && json.message === "success") {
         const coordinate = new Coordinate({
           Latitude: parseFloat(json.iss_position.latitude),
@@ -31,6 +30,10 @@ export default function useData(): Data {
       setIsApiError(true);
     }
   };
+
+  function sleep() {
+    return new Promise((resolve) => setTimeout(resolve, 5000));
+  }
 
   const getUserLocation = async () => {
     try {
@@ -58,7 +61,6 @@ export default function useData(): Data {
         //const peoples = json.people.map((x: any) => x.craft === "ISS" && x.name);
         const peoples = json.people.map((x: any) => ({ craft: x.craft, name: x.name }));
         setPeopleOnIss(peoples);
-        console.log("data", json);
       } else {
         setIsApiError(true);
       }
@@ -69,12 +71,9 @@ export default function useData(): Data {
 
   const getNextOverhead = async () => {
     try {
-      console.log("here");
       let location = await Location.getCurrentPositionAsync({});
       let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=5`);
       let json = await data.json();
-      console.log("json", json);
-      console.log("dataaaa", data);
 
       if (json && json.message === "success") {
         const overheads = json.response.map((x: any) => x.risetime * 1000);
@@ -138,6 +137,19 @@ export default function useData(): Data {
       }
     } catch (error) {}
   };
+
+  return [
+    new Data({
+      userLocation,
+      issLocation,
+      distanceMeter,
+      isLocationPermissionError: !isLocationPermissionGranted,
+      isApiError,
+      peopleOnIss,
+      nextOverhead,
+    }),
+    getPermissionForLocation,
+  ];
 
   return new Data({
     userLocation,
