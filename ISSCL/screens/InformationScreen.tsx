@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Colors from "../constants/Colors";
 import Links from "../constants/Links";
 import { LanguageContext } from "../context/LanguageContext";
+import * as StoreReview from "expo-store-review";
 
 export default function Information() {
   const languageData = useContext(LanguageContext);
@@ -40,6 +41,9 @@ export default function Information() {
           <Picker.Item label="🇺🇸 English" value="en" />
           <Picker.Item label="🇹🇷 Türkçe" value="tr" />
         </Picker>
+      </View>
+      <View style={[styles.miniContainer, { marginTop: 15 }]}>
+        <Button color={Colors.box} onPress={() => StoreReview.requestReview()} title={l.rate_app}></Button>
       </View>
     </ScrollView>
   );

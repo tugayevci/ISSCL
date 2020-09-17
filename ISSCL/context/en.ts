@@ -17,4 +17,10 @@ export default {
   your_location: "Your Location",
   options: "Options",
   next_overhead: "Next overhead at 🕖",
+  calculating: "Calculating",
+  rate_app: "Rate App ⭐⭐⭐⭐⭐",
+  would_you_like_to_rate: "Would you like to share your review? This will help and motivate us a lot.",
+  rate: "Rate",
+  never: "Never",
+  not_now: "Not Now",
 };

@@ -8,6 +8,7 @@ import BottomTabNavigator from "./navigation/BottomTabNavigator";
 import LinkingConfiguration from "./navigation/LinkingConfiguration";
 import { useLanguage } from "./hooks/useLanguage";
 import { LanguageContext } from "./context/LanguageContext";
+import StoreReviewComponent from "./components/StoreReviewComponent";
 
 export default function App(props) {
   const isLoadingComplete = useCachedResources();
@@ -27,6 +28,7 @@ export default function App(props) {
             </LanguageContext.Provider>
           </DataContext.Provider>
         </NavigationContainer>
+        <StoreReviewComponent />
       </View>
     );
   }

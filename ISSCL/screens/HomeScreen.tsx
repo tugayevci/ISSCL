@@ -123,15 +123,17 @@ export default function HomeScreen() {
           {!data.isLocationPermissionError && (
             <TouchableOpacity
               onPress={() => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                setShowOverheads(!showOverheads);
+                if (data.nextOverhead) {
+                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                  setShowOverheads(!showOverheads);
+                }
               }}>
               <View style={[styles.box, { flexDirection: "column" }]}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <Text style={styles.textPeopleIss}>
-                    {l.next_overhead} {moment(data.nextOverhead ? data.nextOverhead[0] : null).format("HH:MM")}
+                    {l.next_overhead} {data.nextOverhead ? moment(data.nextOverhead[0]).format("HH:MM") : l.calculating + "..."}
                   </Text>
-                  <AntDesign name={showOverheads ? "caretup" : "caretdown"} size={20} color="white" />
+                  {data.nextOverhead && <AntDesign name={showOverheads ? "caretup" : "caretdown"} size={20} color="white" />}
                 </View>
                 <View style={{ flex: 1 }}>
                   {showOverheads && (

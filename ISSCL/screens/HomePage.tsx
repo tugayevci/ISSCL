@@ -11,9 +11,8 @@ export default function HomePage() {
   const [showPeoples, setShowPeoples] = useState(false);
   const [showOverheads, setShowOverheads] = useState(false);
 
-  const data = useContext(DataContext);
-  console.log("data", data);
-
+  const dataCo = useContext(DataContext);
+  const data = dataCo.data;
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>

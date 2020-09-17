@@ -8,7 +8,7 @@ export default function useData(): any {
   const [issLocation, setIssLocation] = useState<Coordinate | undefined>(undefined);
   const [distanceMeter, setDistanceMeter] = useState<number>(0);
   const [peopleOnIss, setPeopleOnIss] = useState<any[]>([]);
-  const [nextOverhead, setNextOverhead] = useState([1590338576 * 1000]);
+  const [nextOverhead, setNextOverhead] = useState<number[] | undefined>(undefined);
   const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
   const [isApiError, setIsApiError] = useState(false);
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] = useState(false);
@@ -80,7 +80,7 @@ export default function useData(): any {
         setNextOverhead(overheads);
       }
     } catch (error) {
-      console.log("catch", error);
+      console.log("catch ", error);
     }
   };
 

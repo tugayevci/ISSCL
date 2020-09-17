@@ -17,4 +17,10 @@ export default {
   your_location: "Konumunuz",
   options: "Ayarlar",
   next_overhead: "En yakın tepeden geçiş 🕖",
+  calculating: "Hesaplanıyor",
+  rate_app: "Uygulamaya Puan Ver ⭐⭐⭐⭐⭐",
+  would_you_like_to_rate: "Yorumunuzu paylaşmak ister misiniz? Bu bize çok yardımcı olacak ve motive edecek.",
+  rate: "Oyla",
+  never: "Asla",
+  not_now: "Şimdi Değil",
 };
