@@ -47,4 +47,6 @@ export default function BottomTabNavigator() {
       />
     </Tab.Navigator>
   );
+
+  //test
 }
