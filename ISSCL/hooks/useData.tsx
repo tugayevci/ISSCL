@@ -37,10 +37,10 @@ export default function useData(): any {
 
   const getUserLocation = async () => {
     try {
-      // let { status } = await Location.requestPermissionsAsync();
-      // if (status !== "granted") {
-      //   setIsLocationPermissionError(true);
-      // }
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setIsLocationPermissionError(true);
+      }
       let location = await Location.getCurrentPositionAsync({});
 
       const coordinate = new Coordinate({

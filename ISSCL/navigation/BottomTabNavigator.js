@@ -4,7 +4,7 @@ import HomeScreen from "../screens/HomeScreen";
 import InformationScreen from "../screens/InformationScreen";
 import MapScreen from "../screens/MapScreen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Colors from "../constants/Colors";
+import Colors from "../constants/colors";
 import { LanguageContext } from "../context/LanguageContext";
 
 const Tab = createMaterialTopTabNavigator();

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Image, Platform, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation, Button, ActivityIndicator, UIManager } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { DataContext } from "../context/DataContext";
-import Colors from "../constants/Colors";
+import Colors from "../constants/colors";
 import BlinkBox from "../components/BlinkBox";
 import { AntDesign } from "@expo/vector-icons";
 import * as Location from "expo-location";
@@ -139,7 +139,7 @@ export default function HomeScreen() {
                   {showOverheads && (
                     <View style={{ flex: 1, flexDirection: "column" }}>
                       {data.nextOverhead?.map((item, index) => (
-                        <Text key={index} style={styles.listItem}>{`${index + 1}. Overhead ${moment(item).format("DD/MM/YYYY HH:MM")}`}</Text>
+                        <Text key={index} style={styles.listItem}>{`${index + 1}. ${moment(item).format("DD/MM/YYYY HH:MM")}`}</Text>
                       ))}
                     </View>
                   )}
@@ -155,14 +155,17 @@ export default function HomeScreen() {
             }}>
             <View style={[styles.box, { flexDirection: "column" }]}>
               <View style={{ flex: 1, flexDirection: "row" }}>
-                <Text style={styles.textPeopleIss}>The International Space Station (ISS) is a modular space station in low Earth orbit{!showDetails && "..."}</Text>
+                <Text style={styles.textPeopleIss}>
+                  {l.infoText1}
+                  {!showDetails && "..."}
+                </Text>
                 <AntDesign name={showDetails ? "caretup" : "caretdown"} size={20} color="white" />
               </View>
               <View style={{ flex: 1, alignItems: "center" }}>
                 {showDetails && (
                   <>
                     <Text style={[styles.textPeopleIss, { marginTop: 10 }]}>
-                      It is a multinational collaborative project between five participating space agencies: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 and CSA 🇨🇦
+                      {l.infoText2}
                     </Text>
                     <Image resizeMode="contain" style={{ width: 250, height: 250, margin: 20 }} source={require("../assets/images/issBadge.png")} />
                   </>

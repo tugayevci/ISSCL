@@ -23,4 +23,6 @@ export default {
   rate: "Rate",
   never: "Never",
   not_now: "Not Now",
+  infoText1: "The International Space Station (ISS) is a modular space station in low Earth orbit",
+  infoText2: "It is a multinational collaborative project between five participating space agencies: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 and CSA 🇨🇦",
 };

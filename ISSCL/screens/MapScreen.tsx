@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Dimensions, CameraRoll, ActivityIndicator, Touc
 import { DataContext } from "../context/DataContext";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import route from "../constants/issRoute";
-import Colors from "../constants/Colors";
+import Colors from "../constants/colors";
 import BlinkBox from "../components/BlinkBox";
 import { LanguageContext } from "../context/LanguageContext";
 

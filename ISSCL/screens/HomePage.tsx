@@ -3,7 +3,7 @@ import "react-native-gesture-handler";
 import { StyleSheet, Text, View, Image, FlatList, ScrollView } from "react-native";
 import Coordinate from "../models/Coordinate";
 import { DataContext } from "../context/DataContext";
-import Colors from "../constants/Colors";
+import Colors from "../constants/colors";
 const moment = require("moment");
 
 export default function HomePage() {

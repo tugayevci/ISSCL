@@ -23,4 +23,6 @@ export default {
   rate: "Oyla",
   never: "Asla",
   not_now: "Şimdi Değil",
+  infoText1: "Uluslararası Uzay İstasyonu (ISS), alçak Dünya yörüngesindeki modüler bir uzay istasyonudur",
+  infoText2: "Katılan beş uzay ajansı arasında çok uluslu bir işbirliği projesidir: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 ve CSA 🇨🇦",
 };

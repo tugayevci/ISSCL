@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import "react-native-gesture-handler";
 import { StyleSheet, Text, View, Button, Image, Linking, Picker } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Colors from "../constants/Colors";
-import Links from "../constants/Links";
+import Colors from "../constants/colors";
+import Links from "../constants/links";
 import { LanguageContext } from "../context/LanguageContext";
 import * as StoreReview from "expo-store-review";
 
