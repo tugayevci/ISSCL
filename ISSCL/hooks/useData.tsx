@@ -71,14 +71,23 @@ export default function useData(): any {
 
   const getNextOverhead = async () => {
     try {
-      let location = await Location.getCurrentPositionAsync({});
-      let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=5`);
-      let json = await data.json();
 
-      if (json && json.message === "success") {
-        const overheads = json.response.map((x: any) => x.risetime * 1000);
-        setNextOverhead(overheads);
-      }
+      const getData = async () =>  {
+        let location = await Location.getCurrentPositionAsync({});
+        let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=5`);
+        let json = await data.json();
+
+        if (json && json.message === "success") {
+          const overheads = json.response.map((x: any) => x.risetime * 1000);
+          setNextOverhead(overheads);
+        }
+      };;
+getData();
+      setInterval(() => {
+        getData();
+      }, 15000);
+
+      
     } catch (error) {
       console.log("catch ", error);
     }
