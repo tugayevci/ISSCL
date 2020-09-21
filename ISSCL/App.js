@@ -12,7 +12,7 @@ import StoreReviewComponent from "./components/StoreReviewComponent";
 
 export default function App(props) {
   const isLoadingComplete = useCachedResources();
-  const [data, grantPermission] = useData();
+  const [data, getPermissionForLocation] = useData();
   const [language, setLanguage] = useLanguage();
 
   if (!isLoadingComplete) {
@@ -22,7 +22,7 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === "ios" && <StatusBar barStyle="dark-content" />}
         <NavigationContainer linking={LinkingConfiguration}>
-          <DataContext.Provider value={{ data, grantPermission }}>
+          <DataContext.Provider value={{ data, getPermissionForLocation }}>
             <LanguageContext.Provider value={{ language, setLanguage }}>
               <BottomTabNavigator />
             </LanguageContext.Provider>

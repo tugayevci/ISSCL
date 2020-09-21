@@ -1,22 +1,29 @@
 import Coordinate from "./Coordinate";
+import PeopleSpace from "./PeopleSpace";
 
 export default class Data {
-  userLocation: Coordinate | undefined;
-  issLocation: Coordinate | undefined;
-  distanceMeter: number;
-  distanceKm?: number;
-  isLocationPermissionError?: boolean;
-  isApiError?: boolean;
-  peopleOnIss?: any[];
-  nextOverhead?: number[];
+  issLocation: Coordinate | null;
+  isIssApiError: boolean;
+  userLocation: Coordinate | null;
+  isUserLocationError: boolean;
+  peopleOnSpace: PeopleSpace[];
+  isPeopleSpaceError: boolean;
+  nextOverhead: number[];
+  isNextOverheadError: boolean;
+  distanceMeter: number | null;
+  isDistanceMeterError: boolean;
+  isLocationPermissionGranted: boolean;
   constructor(x: Data) {
-    this.userLocation = x.userLocation;
     this.issLocation = x.issLocation;
-    this.isLocationPermissionError = x.isLocationPermissionError;
-    this.isApiError = x.isApiError;
-    this.distanceMeter = x.distanceMeter;
-    this.distanceKm = x.distanceMeter / 1000;
-    this.peopleOnIss = x.peopleOnIss;
+    this.isIssApiError = x.isIssApiError;
+    this.userLocation = x.userLocation;
+    this.isUserLocationError = x.isUserLocationError;
+    this.peopleOnSpace = x.peopleOnSpace;
+    this.isPeopleSpaceError = x.isPeopleSpaceError;
     this.nextOverhead = x.nextOverhead;
+    this.isNextOverheadError = x.isNextOverheadError;
+    this.distanceMeter = x.distanceMeter;
+    this.isDistanceMeterError = x.isDistanceMeterError;
+    this.isLocationPermissionGranted = x.isLocationPermissionGranted;
   }
 }

@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
+
 import Coordinate from "../models/Coordinate";
+import PeopleSpace from "../models/PeopleSpace";
 import Data from "../models/Data";
 
-export default function useData(): any {
-  const [userLocation, setUserLocation] = useState<Coordinate | undefined>(undefined);
-  const [issLocation, setIssLocation] = useState<Coordinate | undefined>(undefined);
-  const [distanceMeter, setDistanceMeter] = useState<number>(0);
-  const [peopleOnIss, setPeopleOnIss] = useState<any[]>([]);
-  const [nextOverhead, setNextOverhead] = useState<number[] | undefined>(undefined);
-  const [isLocationPermissionError, setIsLocationPermissionError] = useState(false);
-  const [isApiError, setIsApiError] = useState(false);
+const useData = (): any => {
+  const [issLocation, setIssLocation] = useState<Coordinate | null>(null);
+  const [isIssApiError, setIsIssApiError] = useState(false);
+
+  const [userLocation, setUserLocation] = useState<Coordinate | null>(null);
+  const [isUserLocationError, setIsUserLocationError] = useState(false);
+
+  const [peopleOnSpace, setPeopleOnSpace] = useState<PeopleSpace[]>([]);
+  const [isPeopleSpaceError, setIsPeopleSpaceError] = useState(false);
+
+  const [nextOverhead, setNextOverhead] = useState<number[]>([]);
+  const [isNextOverheadError, setIsNextOverheadError] = useState(false);
+
+  const [distanceMeter, setDistanceMeter] = useState<number | null>(null);
+  const [isDistanceMeterError, setIsDistanceMeterError] = useState(false);
+
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] = useState(false);
 
   const getIssLocation = async () => {
@@ -24,149 +34,164 @@ export default function useData(): any {
         });
         setIssLocation(coordinate);
       } else {
-        setIsApiError(true);
+        setIsIssApiError(true);
       }
     } catch (error) {
-      setIsApiError(true);
+      setIsIssApiError(true);
     }
   };
-
-  function sleep() {
-    return new Promise((resolve) => setTimeout(resolve, 5000));
-  }
 
   const getUserLocation = async () => {
     try {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== "granted") {
-        setIsLocationPermissionError(true);
+        setIsUserLocationError(true);
       }
       let location = await Location.getCurrentPositionAsync({});
 
-      const coordinate = new Coordinate({
-        Latitude: location.coords.latitude,
-        Longitude: location.coords.longitude,
-      });
-      setUserLocation(coordinate);
+      if (location) {
+        setIsLocationPermissionGranted(true)
+        const coordinate = new Coordinate({
+          Latitude: location.coords.latitude,
+          Longitude: location.coords.longitude,
+        });
+        setUserLocation(coordinate);
+      } else {
+        setIsUserLocationError(true);
+      }
     } catch (error) {
-      setIsLocationPermissionError(true);
+      setIsUserLocationError(true);
     }
   };
 
-  const getPeopleOnIss = async () => {
+  const getPeopleOnSpace = async () => {
     try {
       let data = await fetch("http://api.open-notify.org/astros.json");
       let json = await data.json();
+
       if (json && json.message === "success") {
-        //const peoples = json.people.map((x: any) => x.craft === "ISS" && x.name);
-        const peoples = json.people.map((x: any) => ({ craft: x.craft, name: x.name }));
-        setPeopleOnIss(peoples);
+        const peoples = json.people.map((x: any) => new PeopleSpace({ craft: x.craft, name: x.name }));
+        setPeopleOnSpace(peoples);
       } else {
-        setIsApiError(true);
+        setIsPeopleSpaceError(true);
       }
     } catch (error) {
-      setIsApiError(true);
+      setIsPeopleSpaceError(true);
     }
   };
 
-  const getNextOverhead = async () => {
+  const getNextOverhead = async (latitude: number, longitude: number) => {
     try {
+      let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${latitude}&lon=${longitude}&n=5`);
+      let json = await data.json();
 
-      const getData = async () =>  {
-        let location = await Location.getCurrentPositionAsync({});
-        let data = await fetch(`http://api.open-notify.org/iss-pass.json?lat=${location.coords.latitude}&lon=${location.coords.longitude}&n=5`);
-        let json = await data.json();
-
-        if (json && json.message === "success") {
-          const overheads = json.response.map((x: any) => x.risetime * 1000);
-          setNextOverhead(overheads);
-        }
-      };;
-getData();
-      setInterval(() => {
-        getData();
-      }, 15000);
-
-      
+      if (json && json.message === "success") {
+        const overheads = json.response.map((x: any) => x.risetime * 1000);
+        
+        setNextOverhead(overheads);
+      } else {
+        setIsNextOverheadError(true);
+      }
     } catch (error) {
-      console.log("catch ", error);
+      setIsNextOverheadError(true);
     }
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      await getPermissionForLocation();
-      getIssLocation();
-      getPeopleOnIss();
+  const getDistance = (userLocation: Coordinate, issLocation: Coordinate) => {
+    try {
+      const lat1 = issLocation.Latitude;
+      const lon1 = issLocation.Longitude;
+      const lat2 = userLocation.Latitude;
+      const lon2 = userLocation.Longitude;
 
-      setInterval(async () => {
-        getIssLocation();
-      }, 6000);
-    };
+      const R = 6371e3; // metres
+      const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
+      const φ2 = (lat2 * Math.PI) / 180;
+      const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+      const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+      const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const d = R * c; // in metres
+      const dFixed = parseInt(d.toFixed(0));
 
-    getData();
-  }, []);
+      return dFixed;
+    } catch (error) {
+      setIsDistanceMeterError(true);
+      return null
+    }
+  };
 
-  useEffect(() => {
-    getUserLocation();
-    getNextOverhead();
-    setInterval(async () => {
-      getUserLocation();
-    }, 5000);
-  }, [isLocationPermissionGranted]);
-
-  useEffect(() => {
-    if (!userLocation || !issLocation) return;
-
-    const lat1 = issLocation.Latitude;
-    const lon1 = issLocation.Longitude;
-    const lat2 = userLocation.Latitude;
-    const lon2 = userLocation.Longitude;
-
-    const R = 6371e3; // metres
-    const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // in metres
-    const dFixed = parseInt(d.toFixed(0));
-
-    setDistanceMeter(dFixed);
-  }, [userLocation, issLocation]);
-
-  const getPermissionForLocation = async () => {
+  const getPermissionForLocation = async () => {    
     try {
       let status = await Location.requestPermissionsAsync();
       if (status.granted) {
         setIsLocationPermissionGranted(true);
+        setIsUserLocationError(false);
+        setIsNextOverheadError(false);
+        setIsDistanceMeterError(false);
       } else {
         setIsLocationPermissionGranted(false);
+        setIsUserLocationError(true);
+        setIsNextOverheadError(true);
+        setIsDistanceMeterError(true);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("error",error);
+      
+      setIsLocationPermissionGranted(false);
+      setIsUserLocationError(true);
+      setIsNextOverheadError(true);
+      setIsDistanceMeterError(true);
+    }
   };
+
+  useEffect(() => {
+    startSetInterval(getIssLocation, 6000);
+    startSetInterval(getPeopleOnSpace, 20000);
+    
+    getUserLocation().then(_ => {
+      if(isLocationPermissionGranted && !isUserLocationError) startSetInterval(getUserLocation, 5000);
+    })
+
+  }, []);
+
+  useEffect(() => {
+    if (userLocation && issLocation) setDistanceMeter(getDistance(userLocation, issLocation))
+  }, [userLocation, issLocation]);
+
+  useEffect(() => {
+    if (userLocation && nextOverhead.length === 0) getNextOverhead(userLocation.Latitude, userLocation.Longitude);
+  }, [userLocation]);
+
+  useEffect(() => {
+    isLocationPermissionGranted && getUserLocation();
+  }, [isLocationPermissionGranted]);
 
   return [
     new Data({
-      userLocation,
       issLocation,
-      distanceMeter,
-      isLocationPermissionError: !isLocationPermissionGranted,
-      isApiError,
-      peopleOnIss,
+      isIssApiError,
+      userLocation,
+      isUserLocationError,
+      peopleOnSpace,
+      isPeopleSpaceError,
       nextOverhead,
+      isNextOverheadError,
+      distanceMeter,
+      isDistanceMeterError,
+      isLocationPermissionGranted,
     }),
     getPermissionForLocation,
   ];
+};
 
-  return new Data({
-    userLocation,
-    issLocation,
-    distanceMeter,
-    isLocationPermissionError: !isLocationPermissionGranted,
-    isApiError,
-    peopleOnIss,
-    nextOverhead,
-  });
+export default useData;
+
+function startSetInterval(func: Function, ms: number) {
+  noDelaySetInterval(func, ms);
+}
+
+function noDelaySetInterval(func: Function, ms: number) {
+  func();
+  return setInterval(func, ms);
 }

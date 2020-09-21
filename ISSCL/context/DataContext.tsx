@@ -4,9 +4,17 @@ import Data from "../models/Data";
 
 export const DataContext = createContext({
   data: new Data({
-    userLocation: new Coordinate({ Latitude: 0, Longitude: 0 }),
-    issLocation: new Coordinate({ Latitude: 0, Longitude: 0 }),
-    distanceMeter: 0,
+    issLocation: null,
+    isIssApiError: false,
+    userLocation: null,
+    isUserLocationError: false,
+    peopleOnSpace: [],
+    isPeopleSpaceError: false,
+    nextOverhead: [],
+    isNextOverheadError: false,
+    distanceMeter: null,
+    isDistanceMeterError: false,
+    isLocationPermissionGranted: false,
   }),
-  grantPermission: new Function(),
+  getPermissionForLocation: new Function(),
 });

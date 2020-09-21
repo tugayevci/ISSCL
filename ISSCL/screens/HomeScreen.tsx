@@ -7,6 +7,7 @@ import BlinkBox from "../components/BlinkBox";
 import { AntDesign } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { LanguageContext } from "../context/LanguageContext";
+import PeopleSpace from "../models/PeopleSpace";
 
 const moment = require("moment");
 export default function HomeScreen() {
@@ -19,7 +20,7 @@ export default function HomeScreen() {
 
   const contextData = useContext(DataContext);
   const data = contextData.data;
-  const grantPermission = contextData.grantPermission;
+  const grantPermission = contextData.getPermissionForLocation;
 
   const languageData = useContext(LanguageContext);
   const l = languageData.language;
@@ -39,9 +40,15 @@ export default function HomeScreen() {
   }, []);
 
   const allowLocationPermission = async () => {
-    if (grantPermission != null) {
-      grantPermission();
+    try {
+      if (grantPermission != null) {
+        grantPermission();
+      }
+    } catch (error) {
+      console.log("error render",error);
+      
     }
+    
   };
 
   return (
@@ -66,7 +73,7 @@ export default function HomeScreen() {
             </BlinkBox>
           </View>
 
-          {data.isLocationPermissionError ? (
+          {data.isUserLocationError ? (
             <View style={styles.box}>
               <Text style={[styles.textUser, { marginBottom: 10 }]}>App needs location permission 😢</Text>
               <Button onPress={() => allowLocationPermission()} title="Allow Location"></Button>
@@ -87,7 +94,7 @@ export default function HomeScreen() {
           )}
           <View style={styles.box}>
             <Text style={styles.textDistance}>
-              {l.distance}: {data.distanceMeter} m || {data.distanceKm} km
+              {data.distanceMeter ? `${l.distance}: ${data.distanceMeter} m || ${data.distanceMeter / 1000} km` : `${l.distance} ${l.calculating}...`}
             </Text>
           </View>
           <TouchableOpacity
@@ -99,14 +106,14 @@ export default function HomeScreen() {
               <View style={{ flex: 1, flexDirection: "row" }}>
                 <Text style={styles.textPeopleIss}>
                   {/* {l.there_are_currently.replace("{x}", data.peopleOnIss ? data.peopleOnIss.length.toString() : "0").toString()}{" "} */}
-                  {data.peopleOnIss ? l.there_are_currently.replace("{x}", data.peopleOnIss.length.toString()) : l.there_are_currently.replace("{x}", "0")}
+                  {data.peopleOnSpace ? l.there_are_currently.replace("{x}", data.peopleOnSpace.length.toString()) : l.there_are_currently.replace("{x}", "0")}
                 </Text>
                 <AntDesign name={showPeoples ? "caretup" : "caretdown"} size={20} color="white" />
               </View>
               <View style={{ flex: 1 }}>
                 {showPeoples && (
                   <View style={{ flex: 1, flexDirection: "column" }}>
-                    {data.peopleOnIss?.map((item, index) => (
+                    {data.peopleOnSpace?.map((item: PeopleSpace, index: number) => (
                       <Text key={index} style={styles.listItem}>{`👨‍🚀 ${item.name} - ${item.craft}`}</Text>
                     ))}
                   </View>
@@ -115,12 +122,12 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
 
-          {data.isLocationPermissionError && (
+          {data.isUserLocationError && (
             <View style={styles.box}>
               <Text style={styles.textUser}>App needs location permission to get next overhead 😢</Text>
             </View>
           )}
-          {!data.isLocationPermissionError && (
+          {!data.isUserLocationError && (
             <TouchableOpacity
               onPress={() => {
                 if (data.nextOverhead) {
@@ -130,9 +137,14 @@ export default function HomeScreen() {
               }}>
               <View style={[styles.box, { flexDirection: "column" }]}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
-                  <Text style={styles.textPeopleIss}>
-                    {l.next_overhead} {data.nextOverhead ? moment(data.nextOverhead[0]).format("HH:MM") : l.calculating + "..."}
-                  </Text>
+                  {data.isNextOverheadError ? (
+                    <Text style={styles.textPeopleIss}>{"There is an error while calculating next overhead!"}</Text>
+                  ) : (
+                    <Text style={styles.textPeopleIss}>
+                      {l.next_overhead} {data.nextOverhead.length > 0 ? moment(data.nextOverhead[0]).format("HH:MM") : l.calculating + "..."}
+                    </Text>
+                  )}
+
                   {data.nextOverhead && <AntDesign name={showOverheads ? "caretup" : "caretdown"} size={20} color="white" />}
                 </View>
                 <View style={{ flex: 1 }}>
@@ -164,9 +176,7 @@ export default function HomeScreen() {
               <View style={{ flex: 1, alignItems: "center" }}>
                 {showDetails && (
                   <>
-                    <Text style={[styles.textPeopleIss, { marginTop: 10 }]}>
-                      {l.infoText2}
-                    </Text>
+                    <Text style={[styles.textPeopleIss, { marginTop: 10 }]}>{l.infoText2}</Text>
                     <Image resizeMode="contain" style={{ width: 250, height: 250, margin: 20 }} source={require("../assets/images/issBadge.png")} />
                   </>
                 )}

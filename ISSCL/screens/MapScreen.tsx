@@ -19,7 +19,7 @@ export default function Map() {
 
   useEffect(() => {
     setToggleDistanceBlink(!toggleDistanceBlink);
-  }, [data.distanceKm]);
+  }, [data.distanceMeter]);
 
   if (!data.issLocation) {
     return (
@@ -44,7 +44,7 @@ export default function Map() {
           marginBottom: 10,
         }}>
         <BlinkBox toggleBlink={toggleDistanceBlink}>
-          <Text style={styles.text}>{`${l.distance}: ${data.distanceKm} km`}</Text>
+          <Text style={styles.text}> {data.distanceMeter ? `${l.distance}: ${data.distanceMeter} m || ${data.distanceMeter / 1000} km` : `${l.calculating}...`}</Text>
         </BlinkBox>
       </View>
       <MapView
