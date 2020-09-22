@@ -8,6 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { LanguageContext } from "../context/LanguageContext";
 import PeopleSpace from "../models/PeopleSpace";
+import PictureOfDay from "../components/PictureOfDay";
 
 const moment = require("moment");
 export default function HomeScreen() {
@@ -17,6 +18,7 @@ export default function HomeScreen() {
   const [toggleIssBlink, setToggleIssBlink] = useState(false);
   const [toggleUserLocationBlink, setToggleUserLocationBlink] = useState(false);
   const [showDetails, setDetails] = useState(false);
+  const [showPictureOfDayDetails, setShowPictureOfDayDetails] = useState(false);
 
   const contextData = useContext(DataContext);
   const data = contextData.data;
@@ -183,6 +185,21 @@ export default function HomeScreen() {
               </View>
             </View>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              setShowPictureOfDayDetails(!showPictureOfDayDetails);
+            }}>
+            <View style={[styles.box, { flexDirection: "column" }]}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <Text style={styles.textPictureOfDay}>{l.picture_of_day}</Text>
+
+                <AntDesign name={showPictureOfDayDetails ? "caretup" : "caretdown"} size={20} color="white" />
+              </View>
+              <View style={{ flex: 1, alignItems: "center" }}>{showPictureOfDayDetails ? <PictureOfDay details={true} /> : <PictureOfDay details={false} />}</View>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -332,5 +349,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
     color: "#fff",
+  },
+  textPictureOfDay: {
+    color: Colors.secondary,
+    fontSize: 20,
+    flex: 1,
   },
 });

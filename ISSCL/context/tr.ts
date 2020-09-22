@@ -25,4 +25,8 @@ export default {
   not_now: "Şimdi Değil",
   infoText1: "Uluslararası Uzay İstasyonu (ISS), alçak Dünya yörüngesindeki modüler bir uzay istasyonudur",
   infoText2: "Katılan beş uzay ajansı arasında çok uluslu bir işbirliği projesidir: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 ve CSA 🇨🇦",
+  picture_of_day: "Nasa Günün Resmi",
+  picture_of_day_error: "Nasa günün resmi getirilirken bir hata oluştu 😞",
+  show_picture_in_browser: "Resmi Tarayıcıda Göster",
+  share_image_link: "Resim Linkini Paylaş",
 };

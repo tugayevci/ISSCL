@@ -25,4 +25,8 @@ export default {
   not_now: "Not Now",
   infoText1: "The International Space Station (ISS) is a modular space station in low Earth orbit",
   infoText2: "It is a multinational collaborative project between five participating space agencies: NASA 🇺🇸, Roscosmos 🇷🇺, JAXA 🇯🇵, ESA 🇪🇺 and CSA 🇨🇦",
+  picture_of_day: "Picture of Day From Nasa",
+  picture_of_day_error: "There was an error while fetching the picture of day 😞",
+  show_picture_in_browser: "Show Picture In Browser",
+  share_image_link: "Share Image Link",
 };
