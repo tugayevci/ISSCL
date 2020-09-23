@@ -32,18 +32,9 @@ const PictureOfDay = ({ details }: IProps) => {
 
   const onShare = async () => {
     try {
-      const result = await Share.share({
+      await Share.share({
         message: pictureData.hdurl,
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
     } catch (error) {}
   };
 
@@ -53,9 +44,6 @@ const PictureOfDay = ({ details }: IProps) => {
 
       if (pictureString) {
         const jsonData = JSON.parse(pictureString);
-        console.log("jsonData", jsonData);
-        console.log("moment().format(", moment().format("YYYY-MM-DD"));
-
         if (moment().format("YYYY-MM-DD") === jsonData.date) setPictureData(jsonData);
         else getPictureFromNasaApi();
       } else {

@@ -5,7 +5,6 @@ import { DataContext } from "../context/DataContext";
 import Colors from "../constants/colors";
 import BlinkBox from "../components/BlinkBox";
 import { AntDesign } from "@expo/vector-icons";
-import * as Location from "expo-location";
 import { LanguageContext } from "../context/LanguageContext";
 import PeopleSpace from "../models/PeopleSpace";
 import PictureOfDay from "../components/PictureOfDay";
@@ -66,12 +65,19 @@ export default function HomeScreen() {
         <View style={{ flex: 5, marginTop: 15 }}>
           <View style={styles.box}>
             <BlinkBox toggleBlink={toggleIssBlink}>
-              <Text style={styles.textIss}>
-                ISS {l.latitude}: {data.issLocation ? data.issLocation.Latitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
-              </Text>
-              <Text style={styles.textIss}>
-                ISS {l.longitude}: {data.issLocation ? data.issLocation.Longitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
-              </Text>
+              <View style={[{ flexDirection: "row" }]}>
+                <Text style={[styles.textIss, { fontWeight: "bold" }]}>ISS {l.latitude}: </Text>
+                <Text style={[styles.textIss]}>
+                  {data.issLocation ? data.issLocation.Latitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+                </Text>
+              </View>
+
+              <View style={[{ flexDirection: "row" }]}>
+                <Text style={[styles.textIss, { fontWeight: "bold" }]}>ISS {l.longitude}: </Text>
+                <Text style={[styles.textIss]}>
+                  {data.issLocation ? data.issLocation.Longitude : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+                </Text>
+              </View>
             </BlinkBox>
           </View>
 
@@ -83,22 +89,29 @@ export default function HomeScreen() {
           ) : (
             <View style={styles.box}>
               <BlinkBox toggleBlink={toggleUserLocationBlink}>
-                <Text style={styles.textUser}>
-                  {l.your_latitude}:{" "}
-                  {data.userLocation ? data.userLocation.Latitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
-                </Text>
-                <Text style={styles.textUser}>
-                  {l.your_longitude}:{" "}
-                  {data.userLocation ? data.userLocation.Longitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
-                </Text>
+                <View style={[{ flexDirection: "row" }]}>
+                  <Text style={[styles.textUser, { fontWeight: "bold" }]}>{l.your_latitude}: </Text>
+                  <Text style={[styles.textUser]}>
+                    {data.userLocation ? data.userLocation.Latitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+                  </Text>
+                </View>
+
+                <View style={[{ flexDirection: "row" }]}>
+                  <Text style={[styles.textUser, { fontWeight: "bold" }]}>{l.your_longitude}: </Text>
+                  <Text style={[styles.textUser]}>
+                    {data.userLocation ? data.userLocation.Longitude.toFixed(4) : <ActivityIndicator style={{ width: 20, height: 20 }} size="small" color="#fff" />}
+                  </Text>
+                </View>
               </BlinkBox>
             </View>
           )}
           <View style={styles.box}>
-            <Text style={styles.textDistance}>
-              {data.distanceMeter ? `${l.distance}: ${data.distanceMeter} m || ${data.distanceMeter / 1000} km` : `${l.distance} ${l.calculating}...`}
-            </Text>
+            <View style={[{ flexDirection: "row" }]}>
+              <Text style={[styles.textDistance, { fontWeight: "bold" }]}>{l.distance}: </Text>
+              <Text style={[styles.textDistance]}>{data.distanceMeter ? `${data.distanceMeter} m || ${data.distanceMeter / 1000} km` : `${l.calculating}...`}</Text>
+            </View>
           </View>
+
           <TouchableOpacity
             onPress={() => {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -214,97 +227,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center",
-  },
   contentContainer: {
     paddingTop: 30,
   },
-  welcomeContainer: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)",
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center",
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center",
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center",
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7",
-  },
-
   image: {
     width: 30,
     height: 30,
     transform: [{ rotateX: "0deg" }, { rotateZ: "90deg" }],
     marginRight: 5,
-  },
-  scrollView: {
-    marginHorizontal: 8,
   },
   containerHeader: {
     flex: 1,
