@@ -1,11 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
-import { nasaKey } from "../constants/apiKeys";
-import { ActivityIndicator, Button, Image, Linking, Share, StyleSheet, Text, View } from "react-native";
-import Colors from "../constants/colors";
+// import { nasaKey } from "../constants/apiKeys";
+import {
+  ActivityIndicator,
+  Button,
+  Image,
+  Linking,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Colors from "../constants/colorss";
 import { LanguageContext } from "../context/LanguageContext";
 
-const moment = require("moment");
+const dayjs = require("dayjs");
 
 interface IProps {
   details: boolean;
@@ -44,7 +53,8 @@ const PictureOfDay = ({ details }: IProps) => {
 
       if (pictureString) {
         const jsonData = JSON.parse(pictureString);
-        if (moment().format("YYYY-MM-DD") === jsonData.date) setPictureData(jsonData);
+        if (dayjs().format("YYYY-MM-DD") === jsonData.date)
+          setPictureData(jsonData);
         else getPictureFromNasaApi();
       } else {
         getPictureFromNasaApi();
@@ -56,7 +66,7 @@ const PictureOfDay = ({ details }: IProps) => {
   };
 
   const getPictureFromNasaApi = async () => {
-    let data = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${nasaKey}`);
+    let data = await fetch(`https://api.nasa.gov/planetary/apod?api_key=`);
     let json = await data.json();
 
     if (json) {
@@ -67,18 +77,35 @@ const PictureOfDay = ({ details }: IProps) => {
     }
   };
 
-  if (isLoading) return <ActivityIndicator style={{ width: 50, height: 50 }} size="large" color="#fff" />;
-  if (isError) return <Text style={styles.textTitle}>{l.picture_of_day_error}</Text>;
+  if (isLoading)
+    return (
+      <ActivityIndicator
+        style={{ width: 50, height: 50 }}
+        size="large"
+        color="#fff"
+      />
+    );
+  if (isError)
+    return <Text style={styles.textTitle}>{l.picture_of_day_error}</Text>;
 
   return pictureData ? (
     <>
-      <Image resizeMode="contain" style={{ width: "95%", height: 300, margin: 5 }} source={{ uri: pictureData.url }} />
+      <Image
+        resizeMode="contain"
+        style={{ width: "95%", height: 300, margin: 5 }}
+        source={{ uri: pictureData.url }}
+      />
       {details && (
         <>
-          <Text style={styles.textDetails}>Copyright: {pictureData.copyright}</Text>
+          <Text style={styles.textDetails}>
+            Copyright: {pictureData.copyright}
+          </Text>
           <Text style={styles.textDetails}>Title: {pictureData.title}</Text>
           <View style={{ marginTop: 10 }}>
-            <Button onPress={handleImageButton} title={l.show_picture_in_browser}></Button>
+            <Button
+              onPress={handleImageButton}
+              title={l.show_picture_in_browser}
+            ></Button>
           </View>
           <View style={{ marginTop: 10 }}>
             <Button onPress={onShare} title={l.share_image_link}></Button>
@@ -87,7 +114,11 @@ const PictureOfDay = ({ details }: IProps) => {
       )}
     </>
   ) : (
-    <ActivityIndicator style={{ width: 50, height: 50 }} size="large" color="#fff" />
+    <ActivityIndicator
+      style={{ width: 50, height: 50 }}
+      size="large"
+      color="#fff"
+    />
   );
 };
 

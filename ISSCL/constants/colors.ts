@@ -15,5 +15,7 @@ const Colors = {
   primary: "#BB86FC",
   primaryVariant: "#3700B3",
   secondary: "#03DAC6",
+  light: "",
+  dark: "",
 };
 export default Colors;

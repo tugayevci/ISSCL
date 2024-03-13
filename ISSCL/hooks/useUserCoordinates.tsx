@@ -3,12 +3,14 @@ import * as Location from "expo-location";
 import Coordinate from "../models/Coordinate";
 
 export default function useUserCoordinates(): [Coordinate, Function] {
-  const [userLocation, setUserLocation] = useState<Coordinate>(new Coordinate({ Latitude: 0, Longitude: 0 }));
+  const [userLocation, setUserLocation] = useState<Coordinate>(
+    new Coordinate({ Latitude: 0, Longitude: 0 })
+  );
 
   useEffect(() => {
     setInterval(async () => {
       try {
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
         let location = await Location.getCurrentPositionAsync({});
         const coordinate = new Coordinate({
           Latitude: location.coords.latitude,

@@ -8,8 +8,8 @@ export default class Data {
   isUserLocationError: boolean;
   peopleOnSpace: PeopleSpace[];
   isPeopleSpaceError: boolean;
-  nextOverhead: number[];
-  isNextOverheadError: boolean;
+  // nextOverhead: number[];
+  // isNextOverheadError: boolean;
   distanceMeter: number | null;
   isDistanceMeterError: boolean;
   isLocationPermissionGranted: boolean;
@@ -20,8 +20,8 @@ export default class Data {
     this.isUserLocationError = x.isUserLocationError;
     this.peopleOnSpace = x.peopleOnSpace;
     this.isPeopleSpaceError = x.isPeopleSpaceError;
-    this.nextOverhead = x.nextOverhead;
-    this.isNextOverheadError = x.isNextOverheadError;
+    // this.nextOverhead = x.nextOverhead;
+    // this.isNextOverheadError = x.isNextOverheadError;
     this.distanceMeter = x.distanceMeter;
     this.isDistanceMeterError = x.isDistanceMeterError;
     this.isLocationPermissionGranted = x.isLocationPermissionGranted;

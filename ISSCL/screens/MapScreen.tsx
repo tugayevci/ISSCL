@@ -1,19 +1,28 @@
 import React, { useContext, useMemo, useState, useEffect } from "react";
 import "react-native-gesture-handler";
-import { StyleSheet, Text, View, Dimensions, CameraRoll, ActivityIndicator, TouchableOpacity, Button } from "react-native";
-import { DataContext } from "../context/DataContext";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import route from "../constants/issRoute";
 import Colors from "../constants/colors";
 import BlinkBox from "../components/BlinkBox";
 import { LanguageContext } from "../context/LanguageContext";
+import DataContext from "@/context/DataContextt";
 
 export default function Map() {
   const [toggleDistanceBlink, setToggleDistanceBlink] = useState(false);
 
   const contextData = useContext(DataContext);
   const data = contextData.data;
-  const memoPoly = useMemo(() => <Polyline strokeWidth={1} strokeColor="blue" coordinates={route} />, []);
+  // const memoPoly = useMemo(
+  //   () => <Polyline strokeWidth={1} strokeColor="blue" coordinates={route} />,
+  //   []
+  // );
   const languageData = useContext(LanguageContext);
   const l = languageData.language;
 
@@ -24,7 +33,9 @@ export default function Map() {
   if (!data.issLocation) {
     return (
       <View style={[styles.container, { backgroundColor: Colors.background }]}>
-        <Text style={[styles.text, { color: "#fff" }]}>{`Google Maps Loading...`}</Text>
+        <Text
+          style={[styles.text, { color: "#fff" }]}
+        >{`Google Maps Loading...`}</Text>
         <ActivityIndicator size="large" color="#fff" />
       </View>
     );
@@ -42,56 +53,27 @@ export default function Map() {
           borderRadius: 5,
           padding: 10,
           marginBottom: 10,
-        }}>
+        }}
+      >
         <BlinkBox toggleBlink={toggleDistanceBlink}>
-          <Text style={styles.text}> {data.distanceMeter ? `${l.distance}: ${data.distanceMeter} m || ${data.distanceMeter / 1000} km` : `${l.calculating}...`}</Text>
+          <Text style={styles.text}>
+            {" "}
+            {data.distanceMeter
+              ? `${l.distance}: ${data.distanceMeter} m || ${
+                  data.distanceMeter / 1000
+                } km`
+              : `${l.calculating}...`}
+          </Text>
         </BlinkBox>
       </View>
       <MapView
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        style={styles.mapStyle}
-        initialRegion={
-          data.issLocation
-            ? {
-                latitude: data.issLocation.Latitude,
-                longitude: data.issLocation.Longitude,
-                latitudeDelta: 50,
-                longitudeDelta: 100,
-              }
-            : undefined
-        }>
-        {data.issLocation && (
-          <Marker
-            anchor={{ x: 0.5, y: 0.5 }}
-            image={require("../assets/images/issSmall.png")}
-            coordinate={{ latitude: data.issLocation.Latitude, longitude: data.issLocation.Longitude }}
-            title={"International Space Station Current Location"}
-            description={`${l.latitude}: ${data.issLocation.Latitude} ${l.longitude}: ${data.issLocation.Longitude}`}
-          />
-        )}
-
-        {data.userLocation && (
-          <Marker
-            coordinate={{ latitude: data.userLocation.Latitude, longitude: data.userLocation.Longitude }}
-            title={l.your_location}
-            description={`${l.latitude}: ${data.userLocation.Latitude} ${l.longitude}: ${data.userLocation.Longitude}`}
-          />
-        )}
-
-        {data.issLocation && data.userLocation && (
-          <Polyline
-            strokeWidth={2}
-            strokeColor="red"
-            coordinates={[
-              { latitude: data.issLocation.Latitude, longitude: data.issLocation.Longitude },
-              { latitude: data.userLocation.Latitude, longitude: data.userLocation.Longitude },
-            ]}
-          />
-        )}
-
-        {memoPoly}
-      </MapView>
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      />
     </View>
   );
 }
